@@ -101,5 +101,5 @@ Contributions are welcome! To contribute:
 This project is licensed under the **MIT License**.
 
 ## Contact
-- **GitHub Repo:** [Your GitHub Repo](https://github.com/Teejee001/HNG12-Backend--Number-Classification-API)
-- **Email:** your.email@example.com
+- **GitHub Repo:** https://github.com/Teejee001/HNG12-Backend--Number-Classification-API
+- **Email:** Olatunjibalogun025@gmail.com
