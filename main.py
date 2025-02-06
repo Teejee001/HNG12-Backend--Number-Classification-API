@@ -2,17 +2,27 @@ import os
 import uvicorn
 import math
 import requests
-from fastapi import FastAPI, Path, HTTPException
+from fastapi import FastAPI, Query, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 # Initialize FastAPI app
 app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins (update for production)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Root route
 @app.get("/")
 async def root():
     return {
         "message": "Welcome to the Number Classification API!",
-        "usage": "Visit /api/classify-number/<your_number> to classify a number."
+        "usage": "Visit /api/classify-number?number=<your_number> to classify a number."
     }
 
 # Helper function to check if a number is prime
@@ -36,28 +46,17 @@ def is_armstrong(n: int) -> bool:
 # Helper function to fetch a fun fact about a number from the Numbers API
 def get_fun_fact(n: int) -> str:
     try:
-        response = requests.get(f"http://numbersapi.com/{n}")
+        response = requests.get(f"http://numbersapi.com/{n}/math")
         if response.status_code == 200:
-            fact = response.text
-            # Check if the fact is a placeholder or generic message
-            if "missing a fact" in fact.lower() or "boring number" in fact.lower():
-                # Provide a custom fact for Armstrong numbers
-                if is_armstrong(n):
-                    digits = [int(d) for d in str(n)]
-                    power = len(digits)
-                    explanation = " + ".join(f"{d}^{power}" for d in digits)
-                    return f"{n} is an Armstrong number because {explanation} = {n}."
-                else:
-                    return f"{n} is an interesting number."
-            return fact
+            return response.text
     except Exception:
         pass
     return f"{n} is an interesting number."
 
 # API endpoint to classify a number
-@app.get("/api/classify-number/{number}")
+@app.get("/api/classify-number")
 async def classify_number(
-    number: str = Path(..., description="Number to classify")
+    number: str = Query(..., description="Number to classify")
 ):
     # Validate input
     if not number.lstrip('-').isdigit():
