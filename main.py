@@ -2,7 +2,7 @@ import os
 import uvicorn
 import math
 import requests
-from fastapi import FastAPI, Query, HTTPException
+from fastapi import FastAPI, Path, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 # Initialize FastAPI app
@@ -22,7 +22,7 @@ app.add_middleware(
 async def root():
     return {
         "message": "Welcome to the Number Classification API!",
-        "usage": "Visit /api/classify-number?number=<your_number> to classify a number."
+        "usage": "Visit /api/classify-number/<your_number> to classify a number."
     }
 
 # Helper function to check if a number is prime
@@ -54,9 +54,9 @@ def get_fun_fact(n: int) -> str:
     return f"{n} is an interesting number."
 
 # API endpoint to classify a number
-@app.get("/api/classify-number")
+@app.get("/api/classify-number/{number}")
 async def classify_number(
-    number: str = Query(..., description="Number to classify")
+    number: str = Path(..., description="Number to classify")
 ):
     # Validate input
     if not number.lstrip('-').isdigit():
