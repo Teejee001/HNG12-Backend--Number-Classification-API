@@ -1,1 +1,1 @@
-web: python number_classification_api.py
+web: python main.py
