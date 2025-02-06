@@ -7,6 +7,14 @@ from fastapi import FastAPI, Query, HTTPException
 # Initialize FastAPI app
 app = FastAPI()
 
+# Root route
+@app.get("/")
+async def root():
+    return {
+        "message": "Welcome to the Number Classification API!",
+        "usage": "Visit /api/classify-number?number=<your_number> to classify a number."
+    }
+
 # Helper function to check if a number is prime
 def is_prime(n: int) -> bool:
     if n < 2:
@@ -86,5 +94,5 @@ async def classify_number(
 
 # Run the app with Uvicorn
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8080))  # Get port from environment or default to 8080
+    port = int(os.getenv("PORT", 8080))  # Use Railway's PORT or default to 8080
     uvicorn.run(app, host="0.0.0.0", port=port)
