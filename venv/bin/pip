@@ -1,4 +1,4 @@
-#!/home/kali/Desktop/hng12_number_classification_api/venv/bin/python3
+#!/home/kali/Desktop/hng12_number_classification_api/venv/bin/python3.12
 # -*- coding: utf-8 -*-
 import re
 import sys
