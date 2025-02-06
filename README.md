@@ -98,7 +98,11 @@ Contributions are welcome! To contribute:
 5. Create a pull request
 
 ## License
-This project is licensed under the **MIT License**.
+This project is licensed under the **MIT License**
+.
+##Resources
+Fun fact API: http://numbersapi.com/#42
+https://en.wikipedia.org/wiki/Parity_(mathematics)
 
 ## Contact
 - **GitHub Repo:** https://github.com/Teejee001/HNG12-Backend--Number-Classification-API
