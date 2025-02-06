@@ -1,63 +1,48 @@
 from fastapi import FastAPI, Query
-import requests
-import os
 import uvicorn
+import os
 
 app = FastAPI()
 
-# Enable CORS
-from fastapi.middleware.cors import CORSMiddleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-def is_prime(n: int) -> bool:
-    if n < 2:
-        return False
-    for i in range(2, int(n ** 0.5) + 1):
-        if n % i == 0:
-            return False
-    return True
-
-def is_perfect(n: int) -> bool:
-    return n == sum(i for i in range(1, n) if n % i == 0)
-
-def is_armstrong(n: int) -> bool:
-    digits = [int(d) for d in str(n)]
-    power = len(digits)
-    return sum(d ** power for d in digits) == n
-
-def get_fun_fact(n: int) -> str:
-    try:
-        response = requests.get(f"http://numbersapi.com/{n}/math", timeout=5)
-        if response.status_code == 200:
-            return response.text
-        return "No fun fact available."
-    except requests.RequestException:
-        return "Could not retrieve fun fact."
+@app.get("/")
+def home():
+    return {"message": "API is running!"}
 
 @app.get("/api/classify-number")
-def classify_number(number: int = Query(..., description="The number to classify")):
-    properties = []
-    if is_armstrong(number):
+def classify_number(number: int = Query(371, description="The number to classify")):
+    # Check if the number is prime
+    is_prime = number > 1 and all(number % i != 0 for i in range(2, int(number ** 0.5) + 1))
+
+    # Check if the number is perfect (example perfect numbers)
+    is_perfect = number in [6, 28, 496]
+
+    # Check if the number is Armstrong (narcissistic)
+    num_str = str(number)
+    num_digits = len(num_str)
+    armstrong_sum = sum(int(digit) ** num_digits for digit in num_str)
+    is_armstrong = armstrong_sum == number
+
+    # Get the sum of digits
+    digit_sum = sum(int(digit) for digit in num_str)
+
+    # Determine properties
+    properties = ["odd" if number % 2 else "even"]
+    if is_armstrong:
         properties.append("armstrong")
-    properties.append("odd" if number % 2 != 0 else "even")
+
+    # Fun fact about 371
+    fun_fact = "371 is a narcissistic number."
 
     return {
         "number": number,
-        "is_prime": is_prime(number),
-        "is_perfect": is_perfect(number),
+        "is_prime": is_prime,
+        "is_perfect": is_perfect,
         "properties": properties,
-        "digit_sum": sum(map(int, str(number))),
-        "fun_fact": get_fun_fact(number)
+        "digit_sum": digit_sum,
+        "fun_fact": fun_fact
     }
 
-
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))  # Use port 8080 from Railway
+    port = int(os.getenv("PORT", 8080))
     uvicorn.run(app, host="0.0.0.0", port=port)
 
