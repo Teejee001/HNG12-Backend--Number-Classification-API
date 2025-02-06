@@ -42,9 +42,6 @@ def get_fun_fact(n: int) -> str:
 
 @app.get("/api/classify-number")
 def classify_number(number: int = Query(..., description="The number to classify")):
-    if not isinstance(number, int):
-        return {"number": str(number), "error": True}
-
     properties = []
     if is_armstrong(number):
         properties.append("armstrong")
@@ -58,6 +55,7 @@ def classify_number(number: int = Query(..., description="The number to classify
         "digit_sum": sum(map(int, str(number))),
         "fun_fact": get_fun_fact(number)
     }
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))  # Use port 8080 from Railway
